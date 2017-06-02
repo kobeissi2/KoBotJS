@@ -13,6 +13,7 @@
     "discord.js": "^11.1.0",
     "libsodium-wrappers": "^0.5.1",
     "opusscript": "0.0.3",
+    "pokedex-promise-v2": "^3.0.3",
     "uws": "^0.14.5"
   }
 }

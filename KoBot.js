@@ -3,7 +3,7 @@ const TOKEN = "MzE3ODg5ODgwNjY1MzU4MzM2.DAqZzw.gC0waX24V_cuB_aQi7NU3x6LFbA";
 const PREFIX = "!";
 
 var bot = new Discord.Client();
-var servers={};
+var servers = {};
 var fortunes = [
     "It is certain.",
     "It is decidedly so.",
@@ -26,6 +26,7 @@ var fortunes = [
     "Outlook not so good.",
     "Very doubtful."
 ];
+var dice = [1, 2, 3, 4, 5, 6];
 
 String.prototype.supplant = function (o) {
     return this.replace(/{([^{}]*)}/g,
@@ -37,39 +38,43 @@ String.prototype.supplant = function (o) {
 };
 
 
-bot.on("message",function(message){
-    if(message.author.equals(bot.user)) return;
+bot.on("message", function (message) {
+    if (message.author.equals(bot.user)) return;
 
-    if(!message.content.startsWith(PREFIX)) return;
+    if (!message.content.startsWith(PREFIX)) return;
 
     var content = message.content.substring(PREFIX.length).split(" ");
 
-    switch(content[0].toLowerCase()){
+    switch (content[0].toLowerCase()) {
         case "hello":
             message.channel.send("Hello " + message.member.toString() + "!");
             break;
         case "8ball":
-            var questionMark= content[content.length-1].slice(-1);
+            var questionMark = content[content.length - 1].slice(-1);
 
-            if(content[1] && questionMark=="?"){
-                message.channel.send(fortunes[Math.floor(Math.random()*fortunes.length)]);
+            if (content[1] && questionMark == "?") {
+                message.channel.send(fortunes[Math.floor(Math.random() * fortunes.length)]);
             }
-            else message.channel.send("Not a valid question!"); 
+            else message.channel.send("Not a valid question!");
+            break;
+        case "roll":
+            message.channel.send("The number rolled is " + dice[Math.floor(Math.random() * dice.length)]+ "!");
             break;
         case "help":
             var embed = new Discord.RichEmbed()
-                .addField("!hello","Says hello.")
-                .addField("!8ball","Ask a question and it will respond. (Make sure you put a question mark at the end.)")
+                .addField("!hello", "Says hello.")
+                .addField("!8ball", "Ask a question and it will respond. (Make sure you put a question mark at the end.)")
+                .addField("!roll", "Rolls a number on a die.")
                 .setDescription("All the commands:")
                 .setColor(0xffffff);
-            message.channel.send({embed});
-            break;   
+            message.channel.send({ embed });
+            break;
         default:
-            message.channel.send("Invalid Command. Type {prefix}help for valid commands!".supplant({prefix:PREFIX}));
+            message.channel.send("Invalid Command. Type {prefix}help for valid commands!".supplant({ prefix: PREFIX }));
     }
 });
 
-bot.on("ready",function(){
+bot.on("ready", function () {
     console.log("Ready");
 });
 
