@@ -38,12 +38,7 @@ String.prototype.supplant = function (o) {
     );
 };
 
-function reverseString(string) {
-    var splitString = string.split("");
-    var reverseArray = splitString.reverse();
-    var joinArray = reverseArray.join("");
-    return joinArray;
-}
+function reverseString(string) {return string.split("").reverse().join("")};
 
 bot.on("message", function (message) {
     if (message.author.equals(bot.user)) return;
@@ -72,13 +67,17 @@ bot.on("message", function (message) {
             break;
         case "reverse":
             if (content[1]) {
-                var reversed = reverseString(content[1]);
+                var string="";
+                for (i=1; i<content.length; i++) {
+                     string= string + content[i]+ " ";
+                }
+                var reversed = reverseString(string);
                 message.channel.send(reversed);
             } else {
                 message.channel.send("Not a string!");
             }
             break;
-        
+
         case "help":
             var embed = new Discord.RichEmbed()
                 .addField("!hello", "Says hello.")
