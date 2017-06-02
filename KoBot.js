@@ -27,6 +27,7 @@ var fortunes = [
     "Very doubtful."
 ];
 var dice = [1, 2, 3, 4, 5, 6];
+var coin = ["heads", "tails"];
 
 String.prototype.supplant = function (o) {
     return this.replace(/{([^{}]*)}/g,
@@ -37,6 +38,12 @@ String.prototype.supplant = function (o) {
     );
 };
 
+function reverseString(string) {
+    var splitString = string.split("");
+    var reverseArray = splitString.reverse();
+    var joinArray = reverseArray.join("");
+    return joinArray;
+}
 
 bot.on("message", function (message) {
     if (message.author.equals(bot.user)) return;
@@ -58,16 +65,31 @@ bot.on("message", function (message) {
             else message.channel.send("Not a valid question!");
             break;
         case "roll":
-            message.channel.send("The number rolled is " + dice[Math.floor(Math.random() * dice.length)]+ "!");
+            message.channel.send("The number rolled is " + dice[Math.floor(Math.random() * dice.length)] + "!");
             break;
+        case "flip":
+            message.channel.send("The coin flipped to " + coin[Math.floor(Math.random() * coin.length)] + "!");
+            break;
+        case "reverse":
+            if (content[1]) {
+                var reversed = reverseString(content[1]);
+                message.channel.send(reversed);
+            } else {
+                message.channel.send("Not a string!");
+            }
+            break;
+        
         case "help":
             var embed = new Discord.RichEmbed()
                 .addField("!hello", "Says hello.")
                 .addField("!8ball", "Ask a question and it will respond. (Make sure you put a question mark at the end.)")
                 .addField("!roll", "Rolls a number on a die.")
+                .addField("!flip", "Flips a coin.")
+                .addField("!reverse", "Reverses the string sent.")
                 .setDescription("All the commands:")
                 .setColor(0xffffff);
-            message.channel.send({ embed });
+            message.channel.send(message.member.toString() + ", check your PM!");
+            message.author.send({ embed });
             break;
         default:
             message.channel.send("Invalid Command. Type {prefix}help for valid commands!".supplant({ prefix: PREFIX }));
