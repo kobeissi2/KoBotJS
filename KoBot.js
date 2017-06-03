@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+var giphy = require('giphy-api')();
 const TOKEN = "MzE3ODg5ODgwNjY1MzU4MzM2.DAqZzw.gC0waX24V_cuB_aQi7NU3x6LFbA";
 const PREFIX = "!";
 
@@ -38,7 +39,7 @@ String.prototype.supplant = function (o) {
     );
 };
 
-function reverseString(string) {return string.split("").reverse().join("")};
+function reverseString(string) { return string.split("").reverse().join("") };
 
 bot.on("message", function (message) {
     if (message.author.equals(bot.user)) return;
@@ -67,9 +68,9 @@ bot.on("message", function (message) {
             break;
         case "reverse":
             if (content[1]) {
-                var string="";
-                for (i=1; i<content.length; i++) {
-                     string= string + content[i]+ " ";
+                var string = "";
+                for (i = 1; i < content.length; i++) {
+                    string = string + content[i] + " ";
                 }
                 var reversed = reverseString(string);
                 message.channel.send(reversed);
@@ -77,7 +78,21 @@ bot.on("message", function (message) {
                 message.channel.send("Not a string!");
             }
             break;
-
+        case "giphy":
+        var string = "";
+            if (content[1]) {
+                for (i = 1; i < content.length; i++) {
+                    string = string + content[i] + " ";
+                }
+            }
+            else {
+                string = "pokemon";
+            }
+            giphy.search(string).then(function (res) {
+                message.channel.send(res.data[Math.floor(Math.random() * res.data.length)].images.original.url);
+                return;
+            });
+            break;
         case "help":
             var embed = new Discord.RichEmbed()
                 .addField("!hello", "Says hello.")
@@ -85,6 +100,7 @@ bot.on("message", function (message) {
                 .addField("!roll", "Rolls a number on a die.")
                 .addField("!flip", "Flips a coin.")
                 .addField("!reverse", "Reverses the string sent.")
+                .addField("!giphy", "Gets a random gif from Giphy. Use !giphy <string> to search for gif.")
                 .setDescription("All the commands:")
                 .setColor(0xffffff);
             message.channel.send(message.member.toString() + ", check your PM!");
