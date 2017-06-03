@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 var giphy = require('giphy-api')();
-const TOKEN = "MzE3ODg5ODgwNjY1MzU4MzM2.DAqZzw.gC0waX24V_cuB_aQi7NU3x6LFbA";
+const TOKEN = "DUMMY";
 const PREFIX = "!";
 
 var bot = new Discord.Client();
