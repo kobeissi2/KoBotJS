@@ -41,6 +41,8 @@ String.prototype.supplant = function (o) {
 
 function reverseString(string) { return string.split("").reverse().join("") };
 
+function setDefaultGame() {return function () {bot.user.setGame("!help")}};
+
 bot.on("message", function (message) {
     if (message.author.equals(bot.user)) return;
 
@@ -79,7 +81,7 @@ bot.on("message", function (message) {
             }
             break;
         case "giphy":
-        var string = "";
+            var string = "";
             if (content[1]) {
                 for (i = 1; i < content.length; i++) {
                     string = string + content[i] + " ";
@@ -93,6 +95,22 @@ bot.on("message", function (message) {
                 return;
             });
             break;
+        case "setgame":
+            var string = "";
+            if (content[1]) {
+                if (content[2]) {
+                    for (i = 1; i < content.length; i++) {
+                        string = string + content[i] + " ";
+                    }
+                } else string = content[1];
+                bot.user.setGame(string);
+            }
+            else {
+                message.channel.send("No status sent. Setting to default!");
+                setDefaultGame();
+            }
+            setTimeout(setDefaultGame(), 1800000);
+            break;
         case "help":
             var embed = new Discord.RichEmbed()
                 .addField("!hello", "Says hello.")
@@ -101,6 +119,7 @@ bot.on("message", function (message) {
                 .addField("!flip", "Flips a coin.")
                 .addField("!reverse", "Reverses the string sent.")
                 .addField("!giphy", "Gets a random gif from Giphy. Use !giphy <string> to search for gif.")
+                .addField("!setgame", "Sets the bot's game status for 30 min.")
                 .setDescription("All the commands:")
                 .setColor(0xffffff);
             message.channel.send(message.member.toString() + ", check your PM!");
@@ -113,6 +132,7 @@ bot.on("message", function (message) {
 
 bot.on("ready", function () {
     console.log("Ready");
+    bot.user.setGame("!help");
 });
 
 bot.login(TOKEN);
