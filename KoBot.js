@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 var giphy = require('giphy-api')();
+const YTDL = require("ytdl-core");
 const TOKEN = "DUMMY";
 const PREFIX = "!";
 
@@ -29,6 +30,7 @@ var fortunes = [
 ];
 var dice = [1, 2, 3, 4, 5, 6];
 var coin = ["heads", "tails"];
+var servers = {};
 
 String.prototype.supplant = function (o) {
     return this.replace(/{([^{}]*)}/g,
@@ -39,9 +41,19 @@ String.prototype.supplant = function (o) {
     );
 };
 
+function play(connection, message) {
+    var server = servers[message.guild.id];
+    server.dispatcher = connection.playStream(YTDL(server.queue[0], { filter: "audioonly" }));
+    server.queue.shift();
+    server.dispatcher.on("end", function () {
+        if (server.queue[0]) play(connection, message);
+        else connection.disconnect();
+    });
+}
+
 function reverseString(string) { return string.split("").reverse().join("") };
 
-function setDefaultGame() {return function () {bot.user.setGame("!help")}};
+function setDefaultGame() { return function () { bot.user.setGame("!help") } };
 
 bot.on("message", function (message) {
     if (message.author.equals(bot.user)) return;
@@ -111,6 +123,28 @@ bot.on("message", function (message) {
             }
             setTimeout(setDefaultGame(), 1800000);
             break;
+        case "play":
+            if (!content[1]) {
+                message.channel.send("Please provide a link!");
+                return;
+            }
+            if (!message.member.voiceChannel) {
+                message.channel.send("Please join a voice channel!");
+                return;
+            }
+            if (!servers[message.guild.id]) servers[message.guild.id] = {
+                queue: []
+            };
+            var server = servers[message.guild.id];
+            server.queue.push(content[1]);
+            if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function (connection) {
+                play(connection, message);
+            });
+            break;
+        case "stop":
+            var server = servers[message.guild.id];
+            if (server.dispatcher) server.dispatcher.end();
+            break;
         case "help":
             var embed = new Discord.RichEmbed()
                 .addField("!hello", "Says hello.")
@@ -120,6 +154,8 @@ bot.on("message", function (message) {
                 .addField("!reverse", "Reverses the string sent.")
                 .addField("!giphy", "Gets a random gif from Giphy. Use !giphy <string> to search for gif.")
                 .addField("!setgame", "Sets the bot's game status for 30 min.")
+                .addField("!play", "Plays music/audio.")
+                .addField("!stop", "Stops all audio playing.")
                 .setDescription("All the commands:")
                 .setColor(0xffffff);
             message.channel.send(message.member.toString() + ", check your PM!");
