@@ -33,7 +33,6 @@ var fortunes = [
 var dice = [1, 2, 3, 4, 5, 6];
 var coin = ["heads", "tails"];
 var servers = {};
-
 cleverbot.create(function (err, session) {});
 
 String.prototype.supplant = function (o) {
