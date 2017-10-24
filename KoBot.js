@@ -1,11 +1,9 @@
 const Discord = require("discord.js");
 var giphy = require('giphy-api')();
-var CleverBot = require("cleverbot.io");
 const YTDL = require("ytdl-core");
 const TOKEN = "DUMMY";
 const PREFIX = "!";
 
-var cleverbot = new CleverBot("DUMMY", "DUMMY");
 var bot = new Discord.Client();
 var servers = {};
 var fortunes = [
@@ -33,7 +31,6 @@ var fortunes = [
 var dice = [1, 2, 3, 4, 5, 6];
 var coin = ["heads", "tails"];
 var servers = {};
-cleverbot.create(function (err, session) {});
 
 String.prototype.supplant = function (o) {
     return this.replace(/{([^{}]*)}/g,
@@ -147,20 +144,6 @@ bot.on("message", function (message) {
         case "stop":
             var server = servers[message.guild.id];
             if (server.dispatcher) server.dispatcher.end();
-            break;
-        case "respond":
-            var string = "";
-            if (content[1]) {
-                for (i = 1; i < content.length; i++) {
-                    string = string + content[i] + " ";
-                }
-                cleverbot.ask(string, function (err, response) {
-                    message.channel.send(response);
-                });
-            }
-            else {
-                message.channel.send("No message sent!");
-            }
             break;
         case "help":
             var embed = new Discord.RichEmbed()
