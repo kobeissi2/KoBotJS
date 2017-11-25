@@ -1,7 +1,6 @@
 const Discord = require("discord.js");
 var giphy = require('giphy-api')();
 const YTDL = require("ytdl-core");
-const TOKEN = "DUMMY";
 const PREFIX = "!";
 
 var bot = new Discord.Client();
@@ -43,7 +42,9 @@ String.prototype.supplant = function (o) {
 
 function play(connection, message) {
     var server = servers[message.guild.id];
-    server.dispatcher = connection.playStream(YTDL(server.queue[0], { filter: "audioonly" }));
+    server.dispatcher = connection.playStream(YTDL(server.queue[0], {
+        filter: "audioonly"
+    }));
     server.queue.shift();
     server.dispatcher.on("end", function () {
         if (server.queue[0]) play(connection, message);
@@ -51,9 +52,15 @@ function play(connection, message) {
     });
 }
 
-function reverseString(string) { return string.split("").reverse().join("") };
+function reverseString(string) {
+    return string.split("").reverse().join("")
+};
 
-function setDefaultGame() { return function () { bot.user.setGame("!help") } };
+function setDefaultGame() {
+    return function () {
+        bot.user.setGame("!help")
+    }
+};
 
 bot.on("message", function (message) {
     if (message.author.equals(bot.user)) return;
@@ -71,8 +78,7 @@ bot.on("message", function (message) {
 
             if (content[1] && questionMark == "?") {
                 message.channel.send(fortunes[Math.floor(Math.random() * fortunes.length)]);
-            }
-            else message.channel.send("Not a valid question!");
+            } else message.channel.send("Not a valid question!");
             break;
         case "roll":
             message.channel.send("The number rolled is " + dice[Math.floor(Math.random() * dice.length)] + "!");
@@ -98,8 +104,7 @@ bot.on("message", function (message) {
                 for (i = 1; i < content.length; i++) {
                     string = string + content[i] + " ";
                 }
-            }
-            else {
+            } else {
                 string = "pokemon";
             }
             giphy.search(string).then(function (res) {
@@ -116,8 +121,7 @@ bot.on("message", function (message) {
                     }
                 } else string = content[1];
                 bot.user.setGame(string);
-            }
-            else {
+            } else {
                 message.channel.send("No status sent. Setting to default!");
                 setDefaultGame();
             }
@@ -145,6 +149,17 @@ bot.on("message", function (message) {
             var server = servers[message.guild.id];
             if (server.dispatcher) server.dispatcher.end();
             break;
+        case "copy":
+            if (content[1]) {
+                var string = "";
+                for (i = 1; i < content.length; i++) {
+                    string = string + content[i] + " ";
+                }
+                bot.channels.get('1').send(string);
+            } else {
+                message.channel.send("No message supplied");
+            }
+            break;
         case "help":
             var embed = new Discord.RichEmbed()
                 .addField("!hello", "Says hello.")
@@ -156,13 +171,18 @@ bot.on("message", function (message) {
                 .addField("!setgame", "Sets the bot's game status for 30 min.")
                 .addField("!play", "Plays music/audio.")
                 .addField("!stop", "Stops all audio playing.")
+                .addField("!copy", "Copies whatever you sent and sends it to the main channel.")
                 .setDescription("All the commands:")
                 .setColor(0xffffff);
             message.channel.send(message.member.toString() + ", check your PM!");
-            message.author.send({ embed });
+            message.author.send({
+                embed
+            });
             break;
         default:
-            message.channel.send("Invalid Command. Type {prefix}help for valid commands!".supplant({ prefix: PREFIX }));
+            message.channel.send("Invalid Command. Type {prefix}help for valid commands!".supplant({
+                prefix: PREFIX
+            }));
     }
 });
 

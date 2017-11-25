@@ -11,8 +11,8 @@
   "dependencies": {
     "bufferutil": "^3.0.1",
     "cleverbot.io": "^1.0.4",
-    "discord.js": "^11.1.0",
-    "giphy-api": "^1.2.6",
+    "discord.js": "^11.2.1",
+    "giphy-api": "^1.2.7",
     "libsodium-wrappers": "^0.5.1",
     "opusscript": "0.0.3",
     "pokewrap": "^0.2.2",
