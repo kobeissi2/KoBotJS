@@ -2,6 +2,7 @@ const Discord = require("discord.js");
 var giphy = require('giphy-api')();
 const YTDL = require("ytdl-core");
 const PREFIX = "!";
+const TOKEN = "MzE3ODg5ODgwNjY1MzU4MzM2.DPqFEg.W0Ijlad4ke_q9VY1EA0KJYWYCzU";
 
 var bot = new Discord.Client();
 var servers = {};
@@ -29,7 +30,8 @@ var fortunes = [
 ];
 var dice = [1, 2, 3, 4, 5, 6];
 var coin = ["heads", "tails"];
-var servers = {};
+var server = "";
+var string = "";
 
 String.prototype.supplant = function (o) {
     return this.replace(/{([^{}]*)}/g,
@@ -41,7 +43,8 @@ String.prototype.supplant = function (o) {
 };
 
 function play(connection, message) {
-    var server = servers[message.guild.id];
+    server = servers[message.guild.id];
+    console.log(server.queue[0]);
     server.dispatcher = connection.playStream(YTDL(server.queue[0], {
         filter: "audioonly"
     }));
@@ -53,14 +56,14 @@ function play(connection, message) {
 }
 
 function reverseString(string) {
-    return string.split("").reverse().join("")
-};
+    return string.split("").reverse().join("");
+}
 
 function setDefaultGame() {
     return function () {
-        bot.user.setGame("!help")
-    }
-};
+        bot.user.setGame("!help");
+    };
+}
 
 bot.on("message", function (message) {
     if (message.author.equals(bot.user)) return;
@@ -88,7 +91,7 @@ bot.on("message", function (message) {
             break;
         case "reverse":
             if (content[1]) {
-                var string = "";
+                string = "";
                 for (i = 1; i < content.length; i++) {
                     string = string + content[i] + " ";
                 }
@@ -99,7 +102,7 @@ bot.on("message", function (message) {
             }
             break;
         case "giphy":
-            var string = "";
+            string = "";
             if (content[1]) {
                 for (i = 1; i < content.length; i++) {
                     string = string + content[i] + " ";
@@ -139,19 +142,19 @@ bot.on("message", function (message) {
             if (!servers[message.guild.id]) servers[message.guild.id] = {
                 queue: []
             };
-            var server = servers[message.guild.id];
+            server = servers[message.guild.id];
             server.queue.push(content[1]);
             if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function (connection) {
                 play(connection, message);
             });
             break;
         case "stop":
-            var server = servers[message.guild.id];
+            server = servers[message.guild.id];
             if (server.dispatcher) server.dispatcher.end();
             break;
         case "copy":
             if (content[1]) {
-                var string = "";
+                string = "";
                 for (i = 1; i < content.length; i++) {
                     string = string + content[i] + " ";
                 }
