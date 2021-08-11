@@ -1,5 +1,12 @@
 {
   "extends": [
-    "config:base"
+    "config:base",
+    ":switchToGradleLite",
+    ":automergePr",
+    ":automergeAll",
+    ":disableRateLimiting",
+    ":label(<renovate>)",
+    ":enableVulnerabilityAlertsWithLabel(<renovate>)",
+    "group:all"
   ]
 }
